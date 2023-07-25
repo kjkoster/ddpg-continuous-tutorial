@@ -48,11 +48,8 @@ for episode in range(1000):
         iterations += 1
         observation = new_state
 
-    # if the lander just hovers for 1000 iterations, the gym eventually times
-    # out and marks the game as `truncated`. We want to punish that behaviour a
-    # little extra, because it makes learning slower.
-    if truncated:
-        score -= 100
+    # punish the hovering behaviour by making time a cost
+    score -= iterations
 
     score_history.append(score)
     print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")

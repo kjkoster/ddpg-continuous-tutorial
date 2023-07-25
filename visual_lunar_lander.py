@@ -27,6 +27,9 @@ for episode in range(10000):
         iterations += 1
         env.render()
 
+    # punish the hovering behaviour by making time a cost
+    score -= iterations
+
     score_history.append(score)
     print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
 

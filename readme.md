@@ -50,3 +50,11 @@ loads the models from the `checkpoints` and runs the game with visuals enabled.
 (venv) $ python visual_lunar_lander.py
 ```
 
+## Optimizations
+
+One of the problems that we ran into is that the models learn to hover to avoid
+the punishment of crashing. It found a local optimum in just running the engines
+until the gym times out after 1000 iterations. To counter this, we subtract the
+number of iterations from the final score. This is quite a harsh punishment, but
+it did have the desired effect of stopping the hovering behaviour.
+
