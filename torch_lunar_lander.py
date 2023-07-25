@@ -1,8 +1,11 @@
 import gym
 import time
+import torch as T
 import numpy as np
 from ddpg_torch import Agent
 import matplotlib.pyplot as plt
+
+print(f"training on device {'cuda:0' if T.cuda.is_available() else 'cpu'}")
 
 def plotLearning(scores, filename, x=None, window=5):   
     N = len(scores)
