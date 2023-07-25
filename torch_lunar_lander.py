@@ -36,19 +36,27 @@ for episode in range(1000):
     done = False
     truncated = False
     score = 0
+    iterations = 0
     observation, info = env.reset()
 
     while not (done or truncated):
         action = agent.choose_action(observation)
-        new_state, reward, truncated, done, info = env.step(action)
+        new_state, reward, done, truncated, info = env.step(action)
         agent.remember(observation, action, reward, new_state, int(done or truncated))
         agent.learn()
         score += reward
+        iterations += 1
         observation = new_state
 
+    # if the lander just hovers for 1000 iterations, the gym eventually times
+    # out and marks the game as `truncated`. We want to punish that behaviour a
+    # little extra, because it makes learning slower.
+    if truncated:
+        score -= 100
+
     score_history.append(score)
-    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f} took {time.time() - start:.1f} seconds")
-    if episode % 25 == 0:
+    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
+    if (episode + 1) % 25 == 0:
         agent.save_models()
 
 plotLearning(score_history, 'lunar-lander.png', window=100)

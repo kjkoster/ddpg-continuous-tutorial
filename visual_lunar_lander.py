@@ -17,15 +17,17 @@ for episode in range(10000):
     done = False
     truncated = False
     score = 0
+    iterations = 0
     observation, info = env.reset()
 
     while not (done or truncated):
         action = agent.choose_action(observation)
-        observation, reward, truncated, done, info = env.step(action)
+        observation, reward, done, truncated, info = env.step(action)
         score += reward
+        iterations += 1
         env.render()
 
     score_history.append(score)
-    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f} took {time.time() - start:.1f} seconds")
+    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
 
 
