@@ -16,7 +16,7 @@ good access to the GPU on my Macbook Air M2, plus rendering gyms is easier
 without virtualisation and remoting. Thus, this project comes with a virtual
 environment and is intended to be run on bare metal.
 
-## Steps to Implement
+## Setting up the Environment
 
 Assuming you are on Mac OS X:
 
@@ -25,6 +25,25 @@ $ brew install swig
 $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
+```
+
+## Training the Model
+
+This model runs at about 10 seconds per episode, after 1000 generations, on my
+Macbook Air M2. Checkpoints are saved in a directory named `checkpoints` and the
+model training will try to load previous checkpoints before starting to train.
+
+```bash
 (venv) $ python torch_lunar_lander.py
+```
+
+## Seeing the Trained Model
+
+Training is headless, so after (or even during) training, you may want to see
+the model controlling the lunar lander. To do so, start the command below. That
+loads the models from the `checkpoints` and runs the game with visuals enabled.
+
+```bash
+(venv) $ python visual_lunar_lander.py
 ```
 

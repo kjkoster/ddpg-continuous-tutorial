@@ -1,4 +1,5 @@
 import gym
+import time
 import numpy as np
 from ddpg_torch import Agent
 import matplotlib.pyplot as plt
@@ -15,15 +16,23 @@ def plotLearning(scores, filename, x=None, window=5):
     plt.plot(x, running_avg)
     plt.savefig(filename)
 
-env = gym.make('LunarLanderContinuous-v2', render_mode="human")
+env = gym.make('LunarLanderContinuous-v2')
 
 agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
+
+# try loading checkpoint files, if they exist, so we can continue learning on
+# those. If no files exist, we just start fresh.
+try:
+    agent.load_models()
+except FileNotFoundError:
+    pass
 
 np.random.seed(0)
 
 score_history = []
 for episode in range(1000):
+    start = time.time()
     done = False
     truncated = False
     score = 0
@@ -36,10 +45,9 @@ for episode in range(1000):
         agent.learn()
         score += reward
         observation = new_state
-        env.render()
 
     score_history.append(score)
-    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:])}")
+    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f} took {time.time() - start:.1f} seconds")
     if episode % 25 == 0:
         agent.save_models()
 

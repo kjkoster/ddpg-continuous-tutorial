@@ -115,11 +115,11 @@ class CriticNetwork(nn.Module):
         return state_action_value
 
     def save_checkpoint(self):
-        print("... saving checkpoint ...")
+        print(f"saving {self.checkpoint_file}")
         T.save(self.state_dict(), self.checkpoint_file)
 
     def load_checkpoint(self):
-        print("... loading checkpoint ...")
+        print(f"loading {self.checkpoint_file}")
         self.load_state_dict(T.load(self.checkpoint_file))
 
 class ActorNetwork(nn.Module):
@@ -174,11 +174,11 @@ class ActorNetwork(nn.Module):
         return state_value
 
     def save_checkpoint(self):
-        print("... saving checkpoint ...")
+        print(f"saving self.checkpoint_file")
         T.save(self.state_dict(), self.checkpoint_file)
 
     def load_checkpoint(self):
-        print("... loading checkpoint ...")
+        print(f"loading {self.checkpoint_file}")
         self.load_state_dict(T.load(self.checkpoint_file))
 
 class Agent(object):
