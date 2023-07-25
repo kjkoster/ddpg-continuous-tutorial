@@ -2,3 +2,4 @@ lunar-lander.png
 __pycache__
 checkpoints
 venv
+.DS_Store

@@ -174,7 +174,7 @@ class ActorNetwork(nn.Module):
         return state_value
 
     def save_checkpoint(self):
-        print(f"saving self.checkpoint_file")
+        print(f"saving {self.checkpoint_file}")
         T.save(self.state_dict(), self.checkpoint_file)
 
     def load_checkpoint(self):
