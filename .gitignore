@@ -1,5 +1,7 @@
-lunar-lander.png
-__pycache__
-checkpoints
-venv
 .DS_Store
+
+__pycache__
+venv
+
+checkpoints
+LunarLanderContinuous-v2.*.png

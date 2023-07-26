@@ -19,7 +19,8 @@ def plotLearning(scores, filename, x=None, window=5):
     plt.plot(x, running_avg)
     plt.savefig(filename)
 
-env = gym.make('LunarLanderContinuous-v2')
+game='LunarLanderContinuous-v2'
+env = gym.make(game)
 
 agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
@@ -27,7 +28,7 @@ agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
 # try loading checkpoint files, if they exist, so we can continue learning on
 # those. If no files exist, we just start fresh.
 try:
-    agent.load_models()
+    agent.load_models(f"checkpoints/{game}")
 except FileNotFoundError:
     pass
 
@@ -57,6 +58,6 @@ for episode in range(1000):
     score_history.append(score)
     print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
     if (episode + 1) % 25 == 0:
-        agent.save_models()
-        plotLearning(score_history, 'lunar-lander.png', window=100)
+        agent.save_models(f"checkpoints/{game}")
+        plotLearning(score_history, f"{game}.{episode}.png", window=100)
 

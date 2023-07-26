@@ -7,7 +7,7 @@ import numpy as np
 from ddpg_common import OUActionNoise, ReplayBuffer
 
 class CriticNetwork(nn.Module):
-    def __init__(self, beta, input_dims, fc1_dims, fc2_dims, n_actions, name, chkpt_dir="checkpoints"):
+    def __init__(self, beta, input_dims, fc1_dims, fc2_dims, n_actions, name):
         super(CriticNetwork, self).__init__()
 
         self.beta = beta
@@ -15,12 +15,7 @@ class CriticNetwork(nn.Module):
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
         self.n_actions = n_actions
-
-        try:
-            os.mkdir(chkpt_dir)
-        except FileExistsError:
-            pass
-        self.checkpoint_file = os.path.join(chkpt_dir, f"{name}.critic.ddpg")
+        self.name = name
 
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         f1 = 1.0 / np.sqrt(self.fc1.weight.data.size()[0])
@@ -62,16 +57,18 @@ class CriticNetwork(nn.Module):
 
         return state_action_value
 
-    def save_checkpoint(self):
-        print(f"saving {self.checkpoint_file}")
-        T.save(self.state_dict(), self.checkpoint_file)
+    def save_checkpoint(self, checkpoint_dir):
+        checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
+        print(f"saving {checkpoint_file}")
+        T.save(self.state_dict(), checkpoint_file)
 
-    def load_checkpoint(self):
-        print(f"loading {self.checkpoint_file}")
-        self.load_state_dict(T.load(self.checkpoint_file))
+    def load_checkpoint(self, checkpoint_dir):
+        checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
+        print(f"loading {checkpoint_file}")
+        self.load_state_dict(T.load(checkpoint_file))
 
 class ActorNetwork(nn.Module):
-    def __init__(self, alpha, input_dims, fc1_dims, fc2_dims, n_actions, name, chkpt_dir="checkpoints"):
+    def __init__(self, alpha, input_dims, fc1_dims, fc2_dims, n_actions, name):
         super(ActorNetwork, self).__init__()
 
         self.alpha = alpha
@@ -79,12 +76,7 @@ class ActorNetwork(nn.Module):
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
         self.n_actions = n_actions
-
-        try:
-            os.mkdir(chkpt_dir)
-        except FileExistsError:
-            pass
-        self.checkpoint_file = os.path.join(chkpt_dir, f"{name}.actor.ddpg")
+        self.name = name
 
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         f1 = 1.0 / np.sqrt(self.fc1.weight.data.size()[0])
@@ -121,13 +113,16 @@ class ActorNetwork(nn.Module):
 
         return state_value
 
-    def save_checkpoint(self):
-        print(f"saving {self.checkpoint_file}")
-        T.save(self.state_dict(), self.checkpoint_file)
+    def save_checkpoint(self, checkpoint_dir):
+        checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
+        print(f"saving {checkpoint_file}")
+        T.save(self.state_dict(), checkpoint_file)
 
-    def load_checkpoint(self):
-        print(f"loading {self.checkpoint_file}")
-        self.load_state_dict(T.load(self.checkpoint_file))
+    def load_checkpoint(self, checkpoint_dir):
+        checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
+        print(f"loading {checkpoint_file}")
+        self.load_state_dict(T.load(checkpoint_file))
+
 
 class Agent(object):
     def __init__(self, alpha, beta, input_dims, tau, env, gamma=0.99, n_actions=2,
@@ -146,7 +141,7 @@ class Agent(object):
         self.critic = CriticNetwork(beta, input_dims, layer1_size, layer2_size,
                                   n_actions, 'critic')
         self.target_critic = CriticNetwork(beta, input_dims, layer1_size, layer2_size,
-                                  n_actions, 'critic_actor')
+                                  n_actions, 'target_critic')
 
         self.noise = OUActionNoise(np.zeros(n_actions))
 
@@ -230,17 +225,20 @@ class Agent(object):
                                      (1-tau) * target_critic_state_dict[name].clone()
         self.target_critic.load_state_dict(critic_state_dict)
 
-    def save_models(self):
-        self.actor.save_checkpoint()
-        self.target_actor.save_checkpoint()
-        self.critic.save_checkpoint()
-        self.target_critic.save_checkpoint()
+    def save_models(self, checkpoint_dir):
+        try:
+            os.mkdir(checkpoint_dir)
+        except FileExistsError:
+            pass
 
-    def load_models(self):
-        self.actor.load_checkpoint()
-        self.target_actor.load_checkpoint()
-        self.critic.load_checkpoint()
-        self.target_critic.load_checkpoint()
+        self.actor.save_checkpoint(checkpoint_dir)
+        self.target_actor.save_checkpoint(checkpoint_dir)
+        self.critic.save_checkpoint(checkpoint_dir)
+        self.target_critic.save_checkpoint(checkpoint_dir)
 
-
+    def load_models(self, checkpoint_dir):
+        self.actor.load_checkpoint(checkpoint_dir)
+        self.target_actor.load_checkpoint(checkpoint_dir)
+        self.critic.load_checkpoint(checkpoint_dir)
+        self.target_critic.load_checkpoint(checkpoint_dir)
 

@@ -47,7 +47,7 @@ the model controlling the lunar lander. To do so, start the command below. That
 loads the models from the `checkpoints` and runs the game with visuals enabled.
 
 ```bash
-(venv) $ python visual_lunar_lander.py
+(venv) $ python visual_torch_lunar_lander.py
 ```
 
 ## Optimizations
