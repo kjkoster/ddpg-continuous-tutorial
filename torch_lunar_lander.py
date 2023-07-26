@@ -59,5 +59,5 @@ for episode in range(1000):
     print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
     if (episode + 1) % 25 == 0:
         agent.save_models(f"checkpoints/{game}")
-        plotLearning(score_history, f"{game}.{episode}.png", window=100)
+        plotLearning(score_history, f"{game}.png", window=100)
 
