@@ -32,8 +32,6 @@ try:
 except FileNotFoundError:
     pass
 
-np.random.seed(0)
-
 score_history = []
 for episode in range(1000):
     start = time.time()
