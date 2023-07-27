@@ -59,13 +59,13 @@ class CriticNetwork(nn.Module):
 
     def save_checkpoint(self, checkpoint_dir):
         checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
-        print(f"saving {checkpoint_file}")
         T.save(self.state_dict(), checkpoint_file)
+        print(f"saving {checkpoint_file}")
 
     def load_checkpoint(self, checkpoint_dir):
         checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
-        print(f"loading {checkpoint_file}")
         self.load_state_dict(T.load(checkpoint_file))
+        print(f"loading {checkpoint_file}")
 
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, fc1_dims, fc2_dims, n_actions, name):
@@ -115,13 +115,13 @@ class ActorNetwork(nn.Module):
 
     def save_checkpoint(self, checkpoint_dir):
         checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
-        print(f"saving {checkpoint_file}")
         T.save(self.state_dict(), checkpoint_file)
+        print(f"saving {checkpoint_file}")
 
     def load_checkpoint(self, checkpoint_dir):
         checkpoint_file = f"{checkpoint_dir}/{self.name}.torch"
-        print(f"loading {checkpoint_file}")
         self.load_state_dict(T.load(checkpoint_file))
+        print(f"loading {checkpoint_file}")
 
 
 class Agent(object):
@@ -226,10 +226,7 @@ class Agent(object):
         self.target_critic.load_state_dict(critic_state_dict)
 
     def save_models(self, checkpoint_dir):
-        try:
-            os.mkdir(checkpoint_dir)
-        except FileExistsError:
-            pass
+        os.makedirs(checkpoint_dir, exist_ok=True)
 
         self.actor.save_checkpoint(checkpoint_dir)
         self.target_actor.save_checkpoint(checkpoint_dir)

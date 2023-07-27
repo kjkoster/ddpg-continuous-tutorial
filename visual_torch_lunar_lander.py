@@ -10,8 +10,6 @@ agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
 agent.load_models(f"checkpoints/{game}")
 
-np.random.seed(0)
-
 score_history = []
 for episode in range(10000):
     start = time.time()
