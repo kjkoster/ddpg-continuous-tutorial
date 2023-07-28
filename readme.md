@@ -52,9 +52,23 @@ loads the models from the `checkpoints` and runs the game with visuals enabled.
 
 ## Optimizations
 
+This section lists a few changes from Phil's original code that may affect
+behaviour or learning. There are other changes, but those are syntactical.
+
+### Seeded Random
+
+In his video's Phil is quite clear that he expects the best results with a
+seeded random generation. I ended up not using a seeded generator and just train
+for longer.
+
+### Hover Behaviour
+
 One of the problems that we ran into is that the models learn to hover to avoid
 the punishment of crashing. It found a local optimum in just running the engines
-until the gym times out after 1000 iterations. To counter this, we subtract the
-number of iterations from the final score. This is quite a harsh punishment, but
-it did have the desired effect of stopping the hovering behaviour.
+until the gym times out after 1000 iterations. This behaviour will train out
+given enough training cycles (I trained for 10.000 cycles to get good results).
+
+I also experimented with punishing the hover behaviour by subtracting the number
+of iterations used from the reward. This pushed training in the right direction,
+but is not necessary.
 
