@@ -20,7 +20,10 @@ def plotLearning(scores, filename, x=None, window=5):
     plt.savefig(filename)
 
 game='LunarLanderContinuous-v2'
-env = gym.make(game)
+env = gym.make(game,
+    enable_wind=True,
+    wind_power=15.0,
+    turbulence_power=1.5)
 
 agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
@@ -33,7 +36,7 @@ except FileNotFoundError:
     pass
 
 score_history = []
-for episode in range(1000):
+for episode in range(30000):
     start = time.time()
     done = False
     truncated = False

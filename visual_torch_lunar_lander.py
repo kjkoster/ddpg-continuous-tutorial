@@ -4,7 +4,10 @@ import numpy as np
 from ddpg_torch import Agent
 
 game='LunarLanderContinuous-v2'
-env = gym.make(game, render_mode="human")
+env = gym.make(game, render_mode="human",
+    enable_wind=True,
+    wind_power=15.0,
+    turbulence_power=1.5)
 
 agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
