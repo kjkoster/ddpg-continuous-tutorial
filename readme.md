@@ -1,11 +1,14 @@
 # DDPG Tutorial
-
-This is the code from [Reinforcement Learning in Continuous Action Spaces | DDPG Tutorial Pytorch](https://www.youtube.com/watch?v=6Yd5WnYls_Y)
-by [Machine Learning with Phil](https://www.youtube.com/@MachineLearningwithPhil).
+This is the code from
+[Reinforcement Learning in Continuous Action Spaces | DDPG Tutorial (Pytorch)](https://www.youtube.com/watch?v=6Yd5WnYls_Y)
+by
+[Machine Learning with Phil](https://www.youtube.com/@MachineLearningwithPhil).
 
 Don't ask me why, but I typed all the code myself, following along with Phil's
 video. I made a few adjustments here and there, but it is 99% Phil's code. For
-comparison, here is [Phil's actual code](https://github.com/philtabor/Youtube-Code-Repository/blob/master/ReinforcementLearning/PolicyGradient/DDPG/pytorch/lunar-lander/ddpg_torch.py), which I did use to fix some typos I made.
+comparison, here is
+[Phil's actual code](https://github.com/philtabor/Youtube-Code-Repository/blob/master/ReinforcementLearning/PolicyGradient/DDPG/pytorch/lunar-lander/ddpg_torch.py),
+which I did use to fix some typos I made.
 
 Special thanks to Phil for personally helping me fix some bugs in my code.
 
@@ -20,7 +23,6 @@ without virtualisation and remoting. Thus, this project comes with a virtual
 environment and is intended to be run on bare metal.
 
 ### Setting up the Environment
-
 Assuming you are on Mac OS X:
 
 ```bash
@@ -31,7 +33,6 @@ $ source venv/bin/activate
 ```
 
 ### Training the Model
-
 This model runs at about 10 seconds per episode, after 1000 generations, on my
 Macbook Air M2. Checkpoints are saved in a directory named `checkpoints` and the
 model training will try to load previous checkpoints before starting to train.
@@ -41,7 +42,6 @@ model training will try to load previous checkpoints before starting to train.
 ```
 
 ### Seeing the Trained Model
-
 Training is headless, so after (or even during) training, you may want to see
 the model controlling the lunar lander. To do so, start the command below. That
 loads the models from the `checkpoints` and runs the game with visuals enabled.
@@ -51,18 +51,15 @@ loads the models from the `checkpoints` and runs the game with visuals enabled.
 ```
 
 ## Optimizations
-
 This section lists a few changes from Phil's original code that may affect
 behaviour or learning. There are other changes, but those are syntactical.
 
 ### Seeded Random
-
 In his video's Phil is quite clear that he expects the best results with a
 seeded random generation. I ended up not using a seeded generator and just train
 for longer.
 
-### Hover Behaviour
-
+### Lunar Lander: Hover Behaviour
 One of the problems that we ran into is that the models learn to hover to avoid
 the punishment of crashing. It found a local optimum in just running the engines
 until the gym times out after 1000 iterations. This behaviour will train out
@@ -71,4 +68,17 @@ given enough training cycles (I trained for 10.000 cycles to get good results).
 I also experimented with punishing the hover behaviour by subtracting the number
 of iterations used from the reward. This pushed training in the right direction,
 but is not necessary.
+
+### Lunar Lander: Wind and No Wind
+I trained the model twice with different settings: once without wind and once with wind. Their reward graphs over 30.000 episodes are shown below; left without wind and right with wind.
+
+<p align="center" width="100%">
+    <img width="33%" src="images/LunarLanderContinuous-v2-without-wind.png">
+    <img width="33%" src="images/LunarLanderContinuous-v2-with-wind.png">
+</p>
+
+It is dangerous to draw conclusions from a single training session, but it
+_seems_ that the training with wind results in more robust behaviour. Perhaps
+the extra distrurbance gives the model more situations to train with, improving
+generalisation?
 
