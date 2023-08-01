@@ -82,3 +82,32 @@ _seems_ that the training with wind results in more robust behaviour. Perhaps
 the extra distrurbance gives the model more situations to train with, improving
 generalisation?
 
+### Bipedal Walker: Sitting Down
+After a while, the bipedal walker learns to sit down and wait out the episode.
+My hunch is that this is due to the size of the replay buffer. At 1600 records
+per episode and a capacity of 1.000.000 in the replay buffer, it only takes a
+few hundred episodes for the entire replay buffer to be overwritten. Once the
+sitting behaviour start dominating, this swamps out any other items in the
+replay buffer.
+
+The image below shows the learning curve where the walker learned to just sit
+and wait for the episode to end. Notice how the curve just flattens at the end.
+
+<p align="center" width="100%">
+    <img width="33%" src="images/BipedalWalker-v3-sit-and-wait.png">
+</p>
+
+Making the giant assumtion that this is what is happening, there are two ways
+forward: change the reward structure or change the replay buffer.
+
+Changing the reward is probably the simpelest, we might just give the agent a
+200 point penalty if the game times out. That will make sitting down less
+rewarding than falling on its face. Both give a reward of approximately -130
+points. In fact, the reward for sitting down and timing out is about the same as
+the reward for falling over immediately. The for is a dead-end, while the latter
+opens the door to learning. The further the walker gets before falling over, the
+more points it gets. Sitting down offers no such avenue.
+
+Another idea is to just make the replay buffer larger, increasing the number of
+episodes that can fit into the agent's memory.
+
