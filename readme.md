@@ -92,6 +92,8 @@ replay buffer.
 
 The image below shows the learning curve where the walker learned to just sit
 and wait for the episode to end. Notice how the curve just flattens at the end.
+Training was cut short for this run, because the behaviour causes training to
+slow down to a crawl.
 
 <p align="center" width="100%">
     <img width="33%" src="images/BipedalWalker-v3-sit-and-wait.png">
@@ -100,14 +102,23 @@ and wait for the episode to end. Notice how the curve just flattens at the end.
 Making the giant assumtion that this is what is happening, there are two ways
 forward: change the reward structure or change the replay buffer.
 
-Changing the reward is probably the simpelest, we might just give the agent a
-200 point penalty if the game times out. That will make sitting down less
-rewarding than falling on its face. Both give a reward of approximately -130
-points. In fact, the reward for sitting down and timing out is about the same as
-the reward for falling over immediately. The for is a dead-end, while the latter
-opens the door to learning. The further the walker gets before falling over, the
-more points it gets. Sitting down offers no such avenue.
+The simplest change is to use a larger replay buffer, but after some
+experimentation that does not make much difference. Below is the training graph
+where we used a 10.000.000 element replay buffer. Such a large replay buffer can
+hold the information on 6500 episodes, where the default size could only hold
+about 650 elements. This run also ended with the walker sitting down to wait out
+the games, and I cut it short.
 
-Another idea is to just make the replay buffer larger, increasing the number of
-episodes that can fit into the agent's memory.
+<p align="center" width="100%">
+    <img width="33%" src="images/BipedalWalker-v3-10M-replaybuffer.png">
+</p>
+
+Another option is to change the reward. We might give the agent a (say) 200
+point penalty if the game times out. That will make sitting down less rewarding
+than falling on its face. Both give a reward of approximately -130 points. In
+fact, the reward for sitting down and timing out is about the same as the reward
+for falling over immediately. The former is a dead-end, while the latter opens
+the door to learning. The further the walker gets before falling over, the more
+points it gets. Sitting down offers no such avenue.
+
 
