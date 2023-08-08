@@ -25,7 +25,7 @@ env = gym.make(game,
     wind_power=15.0,
     turbulence_power=1.5)
 
-agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001, env=env,
+agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
 
 # try loading checkpoint files, if they exist, so we can continue learning on

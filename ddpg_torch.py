@@ -10,14 +10,11 @@ class CriticNetwork(nn.Module):
     def __init__(self, beta, input_dims, fc1_dims, fc2_dims, n_actions, name):
         super(CriticNetwork, self).__init__()
 
-        self.beta = beta
-        self.input_dims = input_dims
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
-        self.n_actions = n_actions
         self.name = name
 
-        self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
+        self.fc1 = nn.Linear(*input_dims, self.fc1_dims)
         f1 = 1.0 / np.sqrt(self.fc1.weight.data.size()[0])
         T.nn.init.uniform_(self.fc1.weight.data, -f1, f1)
         T.nn.init.uniform_(self.fc1.bias.data, -f1, f1)
@@ -31,14 +28,14 @@ class CriticNetwork(nn.Module):
 
         self.bn2 = nn.LayerNorm(self.fc2_dims)
 
-        self.action_value = nn.Linear(self.n_actions, self.fc2_dims)
+        self.action_value = nn.Linear(n_actions, self.fc2_dims)
 
         self.q = nn.Linear(self.fc2_dims, 1)
         f3 = 0.003
         T.nn.init.uniform_(self.q.weight.data, -f3, f3)
         T.nn.init.uniform_(self.q.bias.data, -f3, f3)
 
-        self.optimizer = optim.Adam(self.parameters(), lr=self.beta)
+        self.optimizer = optim.Adam(self.parameters(), lr=beta)
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.to(self.device)
 
@@ -72,13 +69,11 @@ class ActorNetwork(nn.Module):
         super(ActorNetwork, self).__init__()
 
         self.alpha = alpha
-        self.input_dims = input_dims
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
-        self.n_actions = n_actions
         self.name = name
 
-        self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
+        self.fc1 = nn.Linear(*input_dims, self.fc1_dims)
         f1 = 1.0 / np.sqrt(self.fc1.weight.data.size()[0])
         T.nn.init.uniform_(self.fc1.weight.data, -f1, f1)
         T.nn.init.uniform_(self.fc1.bias.data, -f1, f1)
@@ -92,7 +87,7 @@ class ActorNetwork(nn.Module):
 
         self.bn2 = nn.LayerNorm(self.fc2_dims)
 
-        self.mu = nn.Linear(self.fc2_dims, self.n_actions)
+        self.mu = nn.Linear(self.fc2_dims, n_actions)
         f3 = 0.003
         T.nn.init.uniform_(self.mu.weight.data, -f3, f3)
         T.nn.init.uniform_(self.mu.bias.data, -f3, f3)
@@ -125,7 +120,7 @@ class ActorNetwork(nn.Module):
 
 
 class Agent(object):
-    def __init__(self, alpha, beta, input_dims, tau, env, gamma=0.99, n_actions=2,
+    def __init__(self, alpha, beta, input_dims, tau, gamma=0.99, n_actions=2,
                  max_size=1000000, layer1_size=400, layer2_size=300, batch_size=64):
         self.gamma = gamma
         self.tau = tau

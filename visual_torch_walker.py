@@ -6,8 +6,8 @@ from ddpg_torch import Agent
 game='BipedalWalker-v3'
 env = gym.make(game, render_mode="human")
 
-agent = Agent(alpha=0.00005, beta=0.0005, input_dims=[24], tau=0.001, env=env,
               batch_size=64, layer1_size=400, layer2_size=300, n_actions=4)
+agent = Agent(alpha=0.00005, beta=0.0005, input_dims=[24], tau=0.001,
 agent.load_models(f"checkpoints/{game}")
 
 score_history = []
