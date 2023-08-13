@@ -3,14 +3,11 @@ import time
 import numpy as np
 from ddpg_torch import Agent
 
-game='LunarLanderContinuous-v2'
-env = gym.make(game, render_mode="human",
-    enable_wind=True,
-    wind_power=15.0,
-    turbulence_power=1.5)
+game='BipedalWalker-v3'
+env = gym.make(game, hardcore=False, render_mode="human")
 
-agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001,
-              batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
+agent = Agent(alpha=0.00005, beta=0.0005, input_dims=[24], tau=0.001,
+              batch_size=64, layer1_size=400, layer2_size=300, n_actions=4, max_size=10_000_000)
 agent.load_models(f"checkpoints/{game}")
 
 score_history = []
@@ -30,5 +27,6 @@ for episode in range(10000):
         env.render()
 
     score_history.append(score)
-    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {time.time() - start:.1f} seconds for {iterations} iterations, done {done}, truncated {truncated}")
+    delta_t = time.time() - start
+    print(f"episode {episode}: score {score:.2f}, 100 game average {np.mean(score_history[-100:]):.2f}, took {delta_t:.1f} seconds for {iterations} iterations, {iterations/delta_t:.1f} iterations per second, done {done}, truncated {truncated}")
 

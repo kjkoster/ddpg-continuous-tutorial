@@ -19,14 +19,11 @@ def plotLearning(scores, filename, x=None, window=5):
     plt.plot(x, running_avg)
     plt.savefig(filename)
 
-game='LunarLanderContinuous-v2'
-env = gym.make(game,
-    enable_wind=True,
-    wind_power=15.0,
-    turbulence_power=1.5)
+game='BipedalWalker-v3'
+env = gym.make(game, hardcore=False)
 
-agent = Agent(alpha=0.000025, beta=0.00025, input_dims=[8], tau=0.001,
-              batch_size=64, layer1_size=400, layer2_size=300, n_actions=2)
+agent = Agent(alpha=0.00005, beta=0.0005, input_dims=[24], tau=0.001,
+              batch_size=64, layer1_size=400, layer2_size=300, n_actions=4, max_size=10_000_000)
 
 # try loading checkpoint files, if they exist, so we can continue learning on
 # those. If no files exist, we just start fresh.
